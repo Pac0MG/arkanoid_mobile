@@ -3,6 +3,9 @@ body {
   background: #111;
   font-family: Arial, sans-serif;
   overflow: hidden;
+  user-select: none; /* Prevent text selection */
+  -webkit-user-select: none; /* Safari */
+  -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
 }
 
 #startScreen, #endScreen {
@@ -17,6 +20,8 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 3;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 #startScreen h1, #endScreen h1 {
@@ -33,6 +38,9 @@ button {
   border-radius: 10px;
   cursor: pointer;
   box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 button:hover {
@@ -43,10 +51,14 @@ canvas {
   display: none;
   background: #222;
   touch-action: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .button-group {
   display: flex;
   gap: 20px;
   flex-direction: row;
+  user-select: none;
+  -webkit-user-select: none;
 }
+
