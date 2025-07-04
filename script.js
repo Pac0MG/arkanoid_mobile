@@ -1,6 +1,8 @@
+
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
+// Set canvas size to window size
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
@@ -29,7 +31,7 @@ const brick = {
   height: 20,
   padding: 10,
   offsetTop: 50,
-  offsetLeft: 30
+  offsetLeft: 30,
 };
 
 let bricks = [];
@@ -46,6 +48,8 @@ function initBricks() {
 initBricks();
 
 const brickSound = document.getElementById("brickSound");
+
+let isGameRunning = false;
 
 function drawPaddle() {
   ctx.fillStyle = paddle.color;
@@ -97,6 +101,8 @@ function collisionDetection() {
 }
 
 function draw() {
+  if (!isGameRunning) return; // Stop game loop if not running
+
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   drawBricks();
@@ -107,6 +113,7 @@ function draw() {
   ball.x += ball.dx;
   ball.y += ball.dy;
 
+  // Ball collision with walls
   if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
     ball.dx = -ball.dx;
   }
@@ -114,6 +121,7 @@ function draw() {
     ball.dy = -ball.dy;
   }
 
+  // Ball collision with paddle
   if (
     ball.y + ball.radius > paddle.y &&
     ball.x > paddle.x &&
@@ -122,11 +130,13 @@ function draw() {
     ball.dy = -ball.dy;
   }
 
+  // Check if player lost
   if (ball.y + ball.radius > canvas.height) {
     showEndScreen("You lose!");
     return;
   }
 
+  // Check if player won
   let bricksLeft = 0;
   for (let r = 0; r < brick.rowCount; r++) {
     for (let c = 0; c < brick.colCount; c++) {
@@ -140,6 +150,7 @@ function draw() {
     return;
   }
 
+  // Update paddle position
   paddle.x += paddle.speed;
   if (paddle.x < 0) paddle.x = 0;
   if (paddle.x + paddle.width > canvas.width) paddle.x = canvas.width - paddle.width;
@@ -147,18 +158,22 @@ function draw() {
   requestAnimationFrame(draw);
 }
 
+// Paddle control by touch (mobile)
 canvas.addEventListener("touchmove", function(e) {
   const touchX = e.touches[0].clientX;
   paddle.x = touchX - paddle.width / 2;
   e.preventDefault();
 }, { passive: false });
 
+// Show the end screen with a message
 function showEndScreen(message) {
+  isGameRunning = false;
   document.getElementById("endMessage").textContent = message;
   document.getElementById("endScreen").style.display = "flex";
   canvas.style.display = "none";
 }
 
+// Return to start screen and reset the game
 function goToStart() {
   document.getElementById("endScreen").style.display = "none";
   document.getElementById("startScreen").style.display = "flex";
@@ -169,14 +184,28 @@ function goToStart() {
   ball.dx = 4;
   ball.dy = -4;
   initBricks();
+  isGameRunning = false; // Wait for Start button to begin
+  canvas.style.display = "none";
 }
 
+// Try to close the window or redirect to about:blank
 function exitGame() {
-  window.close(); // Tenta fechar aba se possível
+  window.close();
   setTimeout(() => {
-    window.location.href = "about:blank"; // Fallback
+    window.location.href = "about:blank";
   }, 200);
 }
+
+// Button event listeners
+document.getElementById("startButton").addEventListener("click", () => {
+  document.getElementById("startScreen").style.display = "none";
+  canvas.style.display = "block";
+  isGameRunning = true;
+  draw();
+});
+
+document.getElementById("restartButton").addEventListener("click", goToStart);
+document.getElementById("exitButton").addEventListener("click", exitGame);
 
 document.getElementById("startButton").addEventListener("click", function () {
   document.getElementById("startScreen").style.display = "none";
