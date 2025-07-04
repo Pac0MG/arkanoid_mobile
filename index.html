@@ -4,31 +4,33 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Arkanoid Mobile</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<!-- START SCREEN -->
-<div id="startScreen">
-  <h1>Arkanoid Mobile</h1>
-  <button id="startButton">Start</button>
-</div>
-
-<!-- END SCREEN -->
-<div id="endScreen" style="display: none;">
-  <h1 id="endMessage">Game Over</h1>
-  <div class="button-group">
-    <button onclick="goToStart()">Start Again</button>
-    <button onclick="exitGame()">Exit</button>
+  <!-- START SCREEN -->
+  <div id="startScreen">
+    <h1>Arkanoid Mobile</h1>
+    <button id="startButton">Start</button>
   </div>
-</div>
 
-<!-- GAME CANVAS -->
-<canvas id="gameCanvas"></canvas>
+  <!-- GAME CANVAS -->
+  <canvas id="gameCanvas" width="480" height="320"></canvas>
 
-<!-- SOUND -->
-<audio id="brickSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" preload="auto"></audio>
+  <!-- END SCREEN -->
+  <div id="endScreen" class="hidden">
+    <h1 id="endMessage">Game Over</h1>
+    <div class="button-group">
+      <button id="restartButton">Start Again</button>
+      <button id="exitButton">Exit</button>
+    </div>
+  </div>
 
-<script src="script.js"></script>
+  <!-- AUDIO (Brick Hit Sound) -->
+  <audio id="brickSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" preload="auto"></audio>
+
+  <!-- SCRIPT -->
+  <script src="script.js"></script>
 </body>
 </html>
+
