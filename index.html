@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arkanoid Mobile</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- START SCREEN -->
+<div id="startScreen">
+  <h1>Arkanoid Mobile</h1>
+  <button id="startButton">Start</button>
+</div>
+
+<!-- END SCREEN -->
+<div id="endScreen" style="display: none;">
+  <h1 id="endMessage">Game Over</h1>
+  <div class="button-group">
+    <button onclick="goToStart()">Start Again</button>
+    <button onclick="exitGame()">Exit</button>
+  </div>
+</div>
+
+<!-- GAME CANVAS -->
+<canvas id="gameCanvas"></canvas>
+
+<!-- SOUND -->
+<audio id="brickSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" preload="auto"></audio>
+
+<script src="script.js"></script>
+</body>
+</html>

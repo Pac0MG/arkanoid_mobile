@@ -1,0 +1,52 @@
+body {
+  margin: 0;
+  background: #111;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+}
+
+#startScreen, #endScreen {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(#111, #222);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+}
+
+#startScreen h1, #endScreen h1 {
+  font-size: 3em;
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 15px 40px;
+  font-size: 1.5em;
+  background: #0f0;
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+button:hover {
+  background: #0c0;
+}
+
+canvas {
+  display: none;
+  background: #222;
+  touch-action: none;
+}
+
+.button-group {
+  display: flex;
+  gap: 20px;
+  flex-direction: row;
+}
