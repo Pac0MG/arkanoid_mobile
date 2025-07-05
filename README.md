@@ -19,5 +19,5 @@ A mobile-friendly version of the classic Arkanoid game, built with HTML5 Canvas,
 👉 [Play the game](https://teu-usuario.github.io/arkanoid-mobile)
 
 ## License
-MIT
+GMV
 
