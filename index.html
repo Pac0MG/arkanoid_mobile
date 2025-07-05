@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,31 +7,31 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
-  <!-- START SCREEN -->
-  <div id="startScreen">
+  <!-- Start screen -->
+  <div id="startScreen" class="screen">
     <h1>Arkanoid Mobile</h1>
     <button id="startButton">Start</button>
   </div>
 
-  <!-- GAME CANVAS -->
-  <canvas id="gameCanvas" width="480" height="320"></canvas>
+  <!-- Game Canvas -->
+  <canvas id="gameCanvas"></canvas>
 
-  <!-- END SCREEN -->
-  <div id="endScreen" class="hidden">
-    <h1 id="endMessage">Game Over</h1>
+  <!-- Final screen -->
+  <div id="endScreen" class="screen hidden">
+    <h2 id="endMessage"></h2>
     <div class="button-group">
       <button id="restartButton">Start Again</button>
       <button id="exitButton">Exit</button>
     </div>
   </div>
 
-  <!-- AUDIO (Brick Hit Sound) -->
-  <audio id="brickSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" preload="auto"></audio>
+  <!-- Audio -->
+  <audio id="brickSound" src="brick-hit.mp3" preload="auto"></audio>
 
-  <!-- SCRIPT -->
+  <!-- Script -->
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
