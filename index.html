@@ -28,38 +28,8 @@
 
   <!-- Audio -->
   <audio id="brickSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" preload="auto"></audio>
-  <audio id="endSound" src="https://actions.google.com/sounds/v1/cartoon/concussive_hit_guitar_boing.ogg" preload="auto"></audio>
 
-  <!-- Audi script with MutationObserver -->
-  <script>
-    const observer = new MutationObserver((mutationsList) => {
-      for (const mutation of mutationsList) {
-        if (mutation.type === "childList") {
-          const endScreen = document.getElementById("endScreen");
-          if (!endScreen.classList.contains("hidden")) {
-            const endSound = document.getElementById("endSound");
-            endSound.currentTime = 0;
-            endSound.play();
-            if (navigator.vibrate) {
-              navigator.vibrate([200, 100, 200]);
-            }
-          }
-        }
-      }
-    });
-
-    observer.observe(document.getElementById("endScreen"), {
-      attributes: false,
-      childList: true,
-      subtree: true
-    });
-  </script>
-
-  <!-- Script principal -->
+  <!-- Script -->
   <script src="script.js"></script>
 </body>
 </html>
-
-
-
-
