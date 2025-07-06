@@ -1,14 +1,29 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="pt">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Arkanoid Mobile</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Background Images */
+    #startScreen {
+      background-image: url("images/startScreen.jpg");
+      background-size: cover;
+      background-position: center;
+    }
+
+    body.game-active {
+      background-image: url("images/gameScreen.jpg");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Start Sreen -->
+  <!-- Start Screen -->
   <div id="startScreen" class="screen">
     <h1>Arkanoid Mobile</h1>
     <button id="startButton">Start</button>
@@ -30,8 +45,24 @@
   <audio id="brickSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" preload="auto"></audio>
 
   <!-- Script -->
+  <script>
+    // Código leve para alternar fundo do body quando o jogo começa
+    document.getElementById("startButton").addEventListener("click", () => {
+      document.body.classList.add("game-active");
+    });
+
+    document.getElementById("restartButton").addEventListener("click", () => {
+      document.body.classList.remove("game-active");
+    });
+
+    document.getElementById("exitButton").addEventListener("click", () => {
+      document.body.classList.remove("game-active");
+    });
+  </script>
+
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
