@@ -1,50 +1,67 @@
-body, html {
+body {
   margin: 0;
-  padding: 0;
-  height: 100%;
-  overflow: hidden;
   font-family: Arial, sans-serif;
-}
-
-#startScreen, #endScreen {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
-#startScreen {
-  background-image: url("images/startScreen.jpg");
-}
-
-#endScreen {
-  background-color: rgba(0, 0, 0, 0.8);
+  background: black;
   color: white;
-  z-index: 10;
-}
-
-#gameBackground {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-image: url("images/gameScreen.jpg");
-  background-size: cover;
-  background-position: center;
-  z-index: 0;
-  display: none;
+  overflow: hidden;
 }
 
 canvas {
   display: none;
+  background-color: #111;
+}
+
+.screen {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 1;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  color: #0ff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1rem;
 }
+
+button {
+  background: #0ff;
+  color: #000;
+  border: none;
+  padding: 1rem 2rem;
+  margin: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #0cc;
+}
+
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  button {
+    width: 80%;
+    font-size: 1rem;
+    padding: 1rem;
+  }
+}
+
 
 
