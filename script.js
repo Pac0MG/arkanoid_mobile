@@ -4,7 +4,7 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-// Proporções para responsividade
+// Brick settings with responsive proportions
 const brick = {
   rowCount: 5,
   colCount: 6,
@@ -12,9 +12,12 @@ const brick = {
   height: canvas.height * 0.035,
   padding: canvas.width * 0.015,
   offsetTop: canvas.height * 0.05,
-  offsetLeft: 0, // será definido dinamicamente
+  offsetLeft: 0, // will be calculated dynamically
 };
-brick.offsetLeft = (canvas.width - (brick.colCount * (brick.width + brick.padding) - brick.padding)) / 2;
+brick.offsetLeft =
+  (canvas.width -
+    (brick.colCount * (brick.width + brick.padding) - brick.padding)) /
+  2;
 
 const paddle = {
   width: canvas.width * 0.2,
@@ -29,8 +32,8 @@ const ball = {
   x: canvas.width / 2,
   y: canvas.height - canvas.height * 0.1,
   radius: canvas.width * 0.015,
-  dx: canvas.width * 0.008,
-  dy: -canvas.height * 0.008,
+  dx: 0,
+  dy: 0,
   color: "#f0f",
 };
 
@@ -89,6 +92,10 @@ function collisionDetection() {
           ball.y < b.y + brick.height
         ) {
           ball.dy = -ball.dy;
+
+          // Add small random horizontal change for variety
+          ball.dx += (Math.random() - 0.5) * canvas.width * 0.001;
+
           b.status = 0;
           brickSound.currentTime = 0;
           brickSound.play();
@@ -124,26 +131,41 @@ function draw() {
   ball.x += ball.dx;
   ball.y += ball.dy;
 
+  // Bounce off left/right walls
   if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
     ball.dx = -ball.dx;
   }
+
+  // Bounce off top
   if (ball.y - ball.radius < 0) {
     ball.dy = -ball.dy;
   }
 
+  // Bounce off paddle
   if (
     ball.y + ball.radius > paddle.y &&
     ball.x > paddle.x &&
     ball.x < paddle.x + paddle.width
   ) {
     ball.dy = -ball.dy;
+
+    // Add variation depending on hit position on paddle
+    const offset =
+      (ball.x - (paddle.x + paddle.width / 2)) / (paddle.width / 2);
+    ball.dx += offset * canvas.width * 0.003;
+
+    // Clamp horizontal speed
+    const maxSpeed = canvas.width * 0.012;
+    ball.dx = Math.max(-maxSpeed, Math.min(maxSpeed, ball.dx));
   }
 
+  // Ball fell below screen
   if (ball.y + ball.radius > canvas.height) {
     showEndScreen("You lose!");
     return;
   }
 
+  // Paddle movement
   paddle.x += paddle.speed;
   if (paddle.x < 0) paddle.x = 0;
   if (paddle.x + paddle.width > canvas.width) {
@@ -170,15 +192,25 @@ function showEndScreen(message) {
   canvas.style.display = "none";
 }
 
+// Randomize ball position and initial direction
+function resetBall() {
+  ball.x = canvas.width / 2;
+  ball.y = canvas.height - canvas.height * 0.1;
+
+  const angle = (Math.random() * Math.PI) / 3 + Math.PI / 6; // 30°–60°
+  const speed = canvas.width * 0.008;
+  const direction = Math.random() < 0.5 ? -1 : 1;
+
+  ball.dx = Math.cos(angle) * speed * direction;
+  ball.dy = -Math.abs(Math.sin(angle) * speed);
+}
+
 function goToStart() {
   document.getElementById("endScreen").classList.add("hidden");
   document.getElementById("startScreen").style.display = "flex";
 
   paddle.x = canvas.width / 2 - paddle.width / 2;
-  ball.x = canvas.width / 2;
-  ball.y = canvas.height - canvas.height * 0.1;
-  ball.dx = canvas.width * 0.008;
-  ball.dy = -canvas.height * 0.008;
+  resetBall();
   initBricks();
   isGameRunning = false;
   canvas.style.display = "none";
@@ -195,10 +227,12 @@ document.getElementById("startButton").addEventListener("click", () => {
   document.getElementById("startScreen").style.display = "none";
   document.getElementById("endScreen").classList.add("hidden");
   canvas.style.display = "block";
+  resetBall();
   isGameRunning = true;
   draw();
 });
 
 document.getElementById("restartButton").addEventListener("click", goToStart);
 document.getElementById("exitButton").addEventListener("click", exitGame);
+
 
