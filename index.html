@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Arkanoid Mobile</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="startScreen">
+    <h1>Arkanoid Mobile</h1>
+    <button id="startButton">Start Game</button>
+  </div>
+
+  <div id="gameInfo" class="hidden">
+    <div>Score: <span id="score">0</span></div>
+    <div>Level: <span id="level">1</span></div>
+  </div>
+
+  <canvas id="gameCanvas"></canvas>
+
+  <div id="endScreen" class="hidden">
+    <h1 id="endMessage"></h1>
+    <div class="button-group">
+      <button id="restartButton">Play Again</button>
+      <button id="exitButton">Exit</button>
+    </div>
+  </div>
+  
+  <audio id="brickSound" preload="auto">
+    <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmAaAThxvfCwcyMFl2+v9K2RSwo" type="audio/wav">
+  </audio>
+
+  <script src="script.js"></script>
+</body>
+</html>

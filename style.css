@@ -1,0 +1,112 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #111;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Start and End Screens */
+#startScreen, #endScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 3;
+  padding: 20px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+  position: relative;
+}
+
+#startScreen::before, #endScreen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.70);
+  z-index: 1;
+}
+
+#startScreen > *, #endScreen > * {
+  position: relative;
+  z-index: 2;
+}
+
+.hidden {
+  display: none !important;
+}
+
+#startScreen h1, #endScreen h1 {
+  font-size: 3em;
+  margin: 0 0 30px 0;
+  line-height: 1.2;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+  background: linear-gradient(45deg, #00ffff, #ff00ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.button-group {
+  display: flex;
+  gap: 20px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+button {
+  padding: 15px 40px;
+  font-size: 1.5em;
+  background: linear-gradient(45deg, #00ff88, #00ccff);
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  margin: 5px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+button:hover, button:active {
+  background: linear-gradient(45deg, #00cc66, #0099cc);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+}
+
+canvas {
+  display: none;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#gameInfo {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  color: #fff;
+  font-size: 1.2em;
+  z-index: 2;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+}
