@@ -36,11 +36,20 @@ let gameState = {
 
 // Responsive canvas setup
 function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+  
+  canvas.width = width;
+  canvas.height = height;
+  
+  // Set canvas style dimensions as well
+  canvas.style.width = width + 'px';
+  canvas.style.height = height + 'px';
   
   // Reposition game elements
-  paddle.x = Math.min(paddle.x, canvas.width - paddle.width);
+  if (paddle.x > 0) {
+    paddle.x = Math.min(paddle.x, canvas.width - paddle.width);
+  }
   paddle.y = canvas.height - 40;
   
   if (ball.x > canvas.width) ball.x = canvas.width / 2;
@@ -114,6 +123,10 @@ function drawPaddle() {
 }
 
 function drawBall() {
+  // Reset any previous shadow effects
+  ctx.shadowColor = 'transparent';
+  ctx.shadowBlur = 0;
+  
   // Ball with glow effect
   ctx.shadowColor = ball.color;
   ctx.shadowBlur = 15;
@@ -122,14 +135,17 @@ function drawBall() {
   ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
   ctx.fillStyle = ball.color;
   ctx.fill();
+  ctx.closePath();
+  
+  // Reset shadow for other elements
+  ctx.shadowColor = 'transparent';
+  ctx.shadowBlur = 0;
   
   // Inner highlight
-  ctx.shadowBlur = 0;
   ctx.beginPath();
   ctx.arc(ball.x - 2, ball.y - 2, ball.radius * 0.4, 0, Math.PI * 2);
   ctx.fillStyle = "#ffffff";
   ctx.fill();
-  
   ctx.closePath();
 }
 
@@ -378,7 +394,14 @@ window.addEventListener('resize', () => {
 
 // Initialize game
 document.addEventListener("DOMContentLoaded", function () {
+  // Ensure canvas context is available
+  if (!ctx) {
+    console.error("Canvas context not available");
+    return;
+  }
+  
   resizeCanvas();
+  initBricks();
   
   document.getElementById("startButton").addEventListener("click", () => {
     resizeCanvas();
@@ -388,6 +411,8 @@ document.addEventListener("DOMContentLoaded", function () {
     
     ball.x = canvas.width / 2;
     ball.y = canvas.height - 60;
+    ball.dx = 5;
+    ball.dy = -5;
 
     document.getElementById("startScreen").style.display = "none";
     document.getElementById("endScreen").classList.add("hidden");
@@ -396,7 +421,11 @@ document.addEventListener("DOMContentLoaded", function () {
     canvas.style.display = "block";
 
     gameState.isRunning = true;
-    draw();
+    
+    // Force first draw
+    setTimeout(() => {
+      draw();
+    }, 100);
   });
 
   document.getElementById("restartButton").addEventListener("click", goToStart);
