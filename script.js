@@ -4,9 +4,7 @@ const scoreElement = document.getElementById("score");
 const levelElement = document.getElementById("level");
 const gameInfo = document.getElementById("gameInfo");
 
-// Game background - using canvas gradients instead of external images
 function drawBackground() {
-  // Create animated starfield background
   const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
   gradient.addColorStop(0, '#0a0a2e');
   gradient.addColorStop(0.5, '#16213e');
@@ -15,7 +13,6 @@ function drawBackground() {
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   
-  // Add some animated stars
   ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
   const time = Date.now() * 0.001;
   for (let i = 0; i < 50; i++) {
@@ -34,7 +31,6 @@ let gameState = {
   isRunning: false
 };
 
-// Responsive canvas setup
 function resizeCanvas() {
   const width = window.innerWidth;
   const height = window.innerHeight;
@@ -42,11 +38,9 @@ function resizeCanvas() {
   canvas.width = width;
   canvas.height = height;
   
-  // Set canvas style dimensions as well
   canvas.style.width = width + 'px';
   canvas.style.height = height + 'px';
-  
-  // Reposition game elements
+
   if (paddle.x > 0) {
     paddle.x = Math.min(paddle.x, canvas.width - paddle.width);
   }
@@ -106,9 +100,79 @@ function initBricks() {
 }
 
 const brickSound = document.getElementById("brickSound");
+const paddleSound = document.getElementById("paddleSound");
+
+let audioContext = null;
+let audioInitialized = false;
+
+function initAudio() {
+  if (audioInitialized) return;
+  
+  try {
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
+    
+    audioInitialized = true;
+    console.log("Audio initialized successfully");
+  } catch (e) {
+    console.log("Audio initialization failed:", e);
+  }
+}
+
+function playSound(audioElement, volume = 0.3) {
+  if (!audioElement) return;
+  
+  try {
+    audioElement.volume = volume;
+    audioElement.currentTime = 0;
+    
+    const playPromise = audioElement.play();
+    
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+        })
+        .catch(error => {
+          console.log("Audio play failed:", error);
+          audioElement.play().catch(() => {
+            createBeepSound(volume);
+          });
+        });
+    }
+  } catch (e) {
+    console.log("Sound play error:", e);
+    createBeepSound(volume);
+  }
+}
+
+function createBeepSound(volume = 0.3) {
+  if (!audioContext) return;
+  
+  try {
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.value = 800;
+    oscillator.type = 'square';
+    
+    gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.1);
+  } catch (e) {
+    console.log("Beep sound creation failed:", e);
+  }
+}
 
 function drawPaddle() {
-  // Gradient paddle
   const gradient = ctx.createLinearGradient(paddle.x, paddle.y, paddle.x, paddle.y + paddle.height);
   gradient.addColorStop(0, paddle.color);
   gradient.addColorStop(1, "#0088cc");
@@ -116,18 +180,15 @@ function drawPaddle() {
   ctx.fillStyle = gradient;
   ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
   
-  // Paddle border
   ctx.strokeStyle = "#ffffff";
   ctx.lineWidth = 2;
   ctx.strokeRect(paddle.x, paddle.y, paddle.width, paddle.height);
 }
 
 function drawBall() {
-  // Reset any previous shadow effects
   ctx.shadowColor = 'transparent';
   ctx.shadowBlur = 0;
   
-  // Ball with glow effect
   ctx.shadowColor = ball.color;
   ctx.shadowBlur = 15;
   
@@ -136,12 +197,10 @@ function drawBall() {
   ctx.fillStyle = ball.color;
   ctx.fill();
   ctx.closePath();
-  
-  // Reset shadow for other elements
+
   ctx.shadowColor = 'transparent';
   ctx.shadowBlur = 0;
   
-  // Inner highlight
   ctx.beginPath();
   ctx.arc(ball.x - 2, ball.y - 2, ball.radius * 0.4, 0, Math.PI * 2);
   ctx.fillStyle = "#ffffff";
@@ -161,7 +220,6 @@ function drawBricks() {
         bricks[r][c].x = brickX;
         bricks[r][c].y = brickY;
         
-        // Brick gradient
         const gradient = ctx.createLinearGradient(brickX, brickY, brickX, brickY + brick.height);
         gradient.addColorStop(0, bricks[r][c].color);
         gradient.addColorStop(1, "#000000");
@@ -169,7 +227,6 @@ function drawBricks() {
         ctx.fillStyle = gradient;
         ctx.fillRect(brickX, brickY, brick.width, brick.height);
         
-        // Brick border
         ctx.strokeStyle = "#ffffff";
         ctx.lineWidth = 1;
         ctx.strokeRect(brickX, brickY, brick.width, brick.height);
@@ -189,7 +246,6 @@ function collisionDetection() {
           ball.y + ball.radius > b.y &&
           ball.y - ball.radius < b.y + brick.height
         ) {
-          // Determine collision side for better physics
           const ballCenterX = ball.x;
           const ballCenterY = ball.y;
           const brickCenterX = b.x + brick.width / 2;
@@ -207,11 +263,8 @@ function collisionDetection() {
           b.status = 0;
           gameState.score += 10 * gameState.level;
           scoreElement.textContent = gameState.score;
-          
-          // Play sound
-          brickSound.volume = 0.3;
-          brickSound.currentTime = 0;
-          brickSound.play().catch(e => console.log("Sound error:", e));
+    
+          playSound(brickSound, 0.4);
 
           if (checkWin()) {
             nextLevel();
@@ -238,12 +291,10 @@ function nextLevel() {
   gameState.level++;
   levelElement.textContent = gameState.level;
   
-  // Increase ball speed slightly
   const speedIncrease = 1.2;
   ball.dx *= speedIncrease;
   ball.dy *= speedIncrease;
   
-  // Cap maximum speed
   if (Math.abs(ball.dx) > ball.maxSpeed) {
     ball.dx = ball.dx > 0 ? ball.maxSpeed : -ball.maxSpeed;
   }
@@ -251,11 +302,9 @@ function nextLevel() {
     ball.dy = ball.dy > 0 ? ball.maxSpeed : -ball.maxSpeed;
   }
   
-  // Reset ball position
   ball.x = canvas.width / 2;
   ball.y = canvas.height - 60;
   
-  // Create new bricks
   initBricks();
   
   if (gameState.level > 5) {
@@ -268,7 +317,6 @@ function draw() {
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Draw background
   drawBackground();
 
   drawBricks();
@@ -280,7 +328,6 @@ function draw() {
   ball.x += ball.dx;
   ball.y += ball.dy;
 
-  // Ball collision with walls
   if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
     ball.dx = -ball.dx;
   }
@@ -288,7 +335,6 @@ function draw() {
     ball.dy = -ball.dy;
   }
 
-  // Ball collision with paddle - improved
   if (
     ball.y + ball.radius >= paddle.y &&
     ball.y - ball.radius <= paddle.y + paddle.height &&
@@ -296,25 +342,23 @@ function draw() {
     ball.x <= paddle.x + paddle.width &&
     ball.dy > 0
   ) {
-    // Add angle based on where ball hits paddle
     const hitPos = (ball.x - paddle.x) / paddle.width;
     const angle = (hitPos - 0.5) * Math.PI / 3; // Max 60 degrees
     
     const speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy);
     ball.dx = Math.sin(angle) * speed;
     ball.dy = -Math.abs(Math.cos(angle) * speed);
+    
+    playSound(paddleSound, 0.2);
   }
 
-  // Game over condition
   if (ball.y + ball.radius > canvas.height) {
     showEndScreen("Game Over! Score: " + gameState.score);
     return;
   }
 
-  // Paddle movement
   paddle.x += paddle.speed;
 
-  // Paddle bounds
   if (paddle.x < 0) paddle.x = 0;
   if (paddle.x + paddle.width > canvas.width) {
     paddle.x = canvas.width - paddle.width;
@@ -323,7 +367,6 @@ function draw() {
   requestAnimationFrame(draw);
 }
 
-// Touch and mouse controls
 function handleMove(clientX) {
   if (gameState.isRunning) {
     paddle.x = clientX - paddle.width / 2;
@@ -343,7 +386,9 @@ canvas.addEventListener("mousemove", function (e) {
   handleMove(e.clientX);
 });
 
-// End Screen functions
+canvas.addEventListener("touchstart", initAudio, { once: true });
+canvas.addEventListener("click", initAudio, { once: true });
+
 function showEndScreen(message) {
   gameState.isRunning = false;
   document.getElementById("endMessage").textContent = message;
@@ -357,13 +402,11 @@ function goToStart() {
   document.getElementById("startScreen").style.display = "flex";
   gameInfo.classList.add("hidden");
 
-  // Reset game state
   gameState.score = 0;
   gameState.level = 1;
   scoreElement.textContent = gameState.score;
   levelElement.textContent = gameState.level;
 
-  // Reset positions
   resizeCanvas();
   paddle.x = canvas.width / 2 - paddle.width / 2;
   ball.x = canvas.width / 2;
@@ -385,16 +428,14 @@ function exitGame() {
   }, 200);
 }
 
-// Window resize handler
 window.addEventListener('resize', () => {
   if (gameState.isRunning) {
     resizeCanvas();
   }
 });
 
-// Initialize game
 document.addEventListener("DOMContentLoaded", function () {
-  // Ensure canvas context is available
+  
   if (!ctx) {
     console.error("Canvas context not available");
     return;
@@ -404,6 +445,8 @@ document.addEventListener("DOMContentLoaded", function () {
   initBricks();
   
   document.getElementById("startButton").addEventListener("click", () => {
+    initAudio();
+    
     resizeCanvas();
     
     paddle.x = canvas.width / 2 - paddle.width / 2;
@@ -422,7 +465,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     gameState.isRunning = true;
     
-    // Force first draw
     setTimeout(() => {
       draw();
     }, 100);
